@@ -29,7 +29,9 @@ class AddUser(nextcord.ui.Modal):
     async def callback(self, interaction: nextcord.Interaction) -> None:
         user = interaction.guild.get_member(int(self.user.value))
         if user is None:
-            return await interaction.response.send_message(f"Invaild User ID", ephemeral=True)
+            return await interaction.response.send_message(
+                "Invaild User ID", ephemeral=True
+            )
         overwirte = nextcord.PermissionOverwrite()
         overwirte.read_messages = True
         await self.channel.set_permissions(user, overwrite=overwirte)
@@ -58,7 +60,9 @@ class RemoveUser(nextcord.ui.Modal):
     async def callback(self, interaction: nextcord.Interaction) -> None:
         user = interaction.guild.get_member(int(self.user.value))
         if user is None:
-            return await interaction.response.send_message(f"Invaild User ID", ephemeral=True)
+            return await interaction.response.send_message(
+                "Invaild User ID", ephemeral=True
+            )
         overwirte = nextcord.PermissionOverwrite()
         overwirte.read_messages = False
         await self.channel.set_permissions(user, overwrite=overwirte)
@@ -159,7 +163,7 @@ async def setup_role(ctx, role: nextcord.Role):
             await ctx.send(f"Tickets Auto-Assign Role has been updated to {role.mention}")
         else:
             await cursor.execute("INSERT INTO roles VALUES (?, ?)", (role.id, ctx.guild.id,))
-            await ctx.send(f"Tickets Auto-Assign Role Added")
+            await ctx.send("Tickets Auto-Assign Role Added")
         await bot.db.commit()
 
 
@@ -189,7 +193,7 @@ async def userinfo(ctx, member: nextcord.Member = None):
     if not member:
         member = ctx.author
 
-    roles = [role for role in member.roles]
+    roles = list(member.roles)
 
     embed = nextcord.Embed(colour=member.color, timestamp=ctx.message.created_at)
 
