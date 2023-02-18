@@ -7,6 +7,7 @@ import time
 import multiprocessing
 import datetime
 import psutil
+import json
 
 class AddUser(nextcord.ui.Modal):
     def __init__(self, channel):
@@ -162,6 +163,7 @@ async def setup_role(ctx, role: nextcord.Role):
             await cursor.execute("UPDATE roles SET role = ? WHERE guild = ?", (role.id, ctx.guild.id))
             await ctx.send(f"Tickets Auto-Assign Role has been updated to {role.mention}")
         else:
+
             await cursor.execute("INSERT INTO roles VALUES (?, ?)", (role.id, ctx.guild.id,))
             await ctx.send("Tickets Auto-Assign Role Added")
         await bot.db.commit()
@@ -233,8 +235,9 @@ async def help(ctx):
     embed.add_field(name="!botinfo", value="Shows bot information", inline=False)
     embed.add_field(name="!avatar", value="Shows user avatar", inline=False)
     embed.add_field(name="!help", value="Shows this message", inline=False)
-    embed.add_field(name="Stats", value="Shows bot stats", inline=False)
     embed.add_field(name="!ping", value="Shows bot latency", inline=False)
+    embed.add_field(name="!ban", value="Bans a user", inline=False)
+    embed.add_field(name="!kick", value="Kicks a user", inline=False)
     embed.add_field(name="!_8ball", value="Ask the bot a question", inline=False)
     await ctx.send(embed=embed)
 
@@ -243,13 +246,7 @@ async def on_guild_join(guild):
     em = nextcord.Embed(title="Thanks for adding me!", description="Thanks for adding me to your server! To get started, do !setup_ticket to set up a ticket system. If you need help, join the support server: https://discord.gg/4Z3Z7Z9")
     await guild.send(embed=em)
 
-@bot.command()
-async def stats(ctx):
-    embed = nextcord.Embed(title="Stats", description="Bot Stats", color=nextcord.Color.green())
-    embed.add_field(name="Servers", value=len(bot.guilds), inline=False)
-    embed.add_field(name="Users", value=len(bot.users), inline=False)
-    embed.add_field(name="Channels", value=len(bot.channels), inline=False)
-    await ctx.send(embed=embed)
+
 
 @bot.command(alises=["8b"])
 async def _8ball(ctx, question):
@@ -290,5 +287,27 @@ async def botinfo(ctx):
     embed.add_field(name="Memory Usage", value=f"{psutil.virtual_memory().percent}%", inline=False)
     embed.add_field(name="Total Memory", value=f"{round(psutil.virtual_memory().total / (1024.0 **3))} GB", inline=False)
     await ctx.send(embed=embed)
+
+@bot.command()
+async def ban(ctx, member: nextcord.Member, *, reason=None):
+    if member == ctx.author:
+        await ctx.send("You can't ban yourself!")
+        return
+    else:
+        await member.ban(reason=reason)
+        embed = nextcord.Embed(title="Banned", description=f"{member.mention}has been banned for {reason}", color=nextcord.Color.red())
+        await ctx.send(embed=embed)
+
+@bot.command()
+async def kick(ctx, member: nextcord.Member, *, reason=None):
+    if member == ctx.author:
+        await ctx.send("You can't kick yourself!")
+        return
+    else:
+        await member.kick(reason=reason)
+        embed = nextcord.Embed(title="Kicked", description=f"{member.mention}has been kicked for {reason}", color=nextcord.Color.red())
+        await ctx.send(embed=embed)
+
+
 
 bot.run(TOKEN)
