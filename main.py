@@ -275,6 +275,8 @@ async def _8ball(ctx, question):
 @bot.command()
 async def ping(ctx):
     em = nextcord.Embed(title="Pong!", description=f"{round(bot.latency * 1000)}ms")
+    await ctx.send(embed=em)
+    
 
 @bot.command()
 async def botinfo(ctx):
@@ -310,4 +312,4 @@ async def kick(ctx, member: nextcord.Member, *, reason=None):
 
 
 
-bot.run(TOKEN)
+bot.run(token)
