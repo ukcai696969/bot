@@ -6,6 +6,7 @@ import random
 import time
 import multiprocessing
 import datetime
+import wavelink
 import psutil
 import json
 
@@ -141,11 +142,22 @@ class Bot(commands.Bot):
 
         print(f"Logged in as {self.user}")
         print("Ready!")
+        bot.loop.create_task(node_connect())
+
 
 
 intents = nextcord.Intents.all()
 bot = Bot(command_prefix="!", intents=intents)
 bot.remove_command("help")
+
+async def node_connect():
+    await bot.wait_until_ready()
+    await wavelink.NodePool.create_node(bot=bot, host="lava.link", port=80, password="dismusic")
+
+
+@bot.event
+async def on_wavelink_node_ready(node: wavelink.Node):
+    print("Connected to node")
 
 @bot.command()
 @commands.has_permissions(administrator=True)
@@ -312,4 +324,4 @@ async def kick(ctx, member: nextcord.Member, *, reason=None):
 
 
 
-bot.run(token)
+bot.run("MTA0ODU1MjM1NDE2Njg3ODI2OA.GjV8bK.i-cLHW9OvCSoRKqMHZen71r-d5bjX_CCDbIiHA")

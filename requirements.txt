@@ -1,0 +1,6 @@
+nextcord
+aiosqlite
+wavelink
+multiprocessing
+json
+psutil
