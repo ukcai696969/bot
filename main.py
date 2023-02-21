@@ -324,4 +324,4 @@ async def kick(ctx, member: nextcord.Member, *, reason=None):
 
 
 
-bot.run("MTA0ODU1MjM1NDE2Njg3ODI2OA.GjV8bK.i-cLHW9OvCSoRKqMHZen71r-d5bjX_CCDbIiHA")
+bot.run("")
